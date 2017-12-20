@@ -8,14 +8,19 @@
         <div class="sign-up-modal-subtitle mdl-typography--subhead margin--bottom-16px">
             ^ad_content
         </div>
-        <a class="mdl-button mdl-button__block mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored mdl-color-text--white mdl-color--light-blue-900" href="https://38qa.net/login?login=facebook" data-upgraded=",MaterialButton,MaterialRipple">
+        <a id="ask-question" class="mdl-button mdl-button__block mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored mdl-color-text--white" href="/ask?state=nologin" data-upgraded=",MaterialButton,MaterialRipple" onclick="mixpanel.track(\'popup-ask-click\');">
+^ask<span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></a>
+
+<!--
+        <a id="facebook-register" class="mdl-button mdl-button__block mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored mdl-color-text--white mdl-color--light-blue-900" href="https://38qa.net/login?login=facebook" data-upgraded=",MaterialButton,MaterialRipple">
 						<i class="fa fa-facebook"></i> ^regist_facebook
 					<span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></a>
-        <a class="mdl-button mdl-button__block mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored mdl-color-text--white mdl-color--blue" href="https://38qa.net/login?login=twitter" data-upgraded=",MaterialButton,MaterialRipple">
+        <a id="twitter-register" class="mdl-button mdl-button__block mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored mdl-color-text--white mdl-color--blue" href="https://38qa.net/login?login=twitter" data-upgraded=",MaterialButton,MaterialRipple">
   					<i class="fa fa-twitter"></i> ^regist_twitter<span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></a>
-        <a class="mdl-button mdl-button__block mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored mdl-color-text--white mdl-color--deep-orange-500" href="https://38qa.net/login?login=google" data-upgraded=",MaterialButton,MaterialRipple">
+        <a id="google-register" class="mdl-button mdl-button__block mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored mdl-color-text--white mdl-color--deep-orange-500" href="https://38qa.net/login?login=google" data-upgraded=",MaterialButton,MaterialRipple">
             <i class="fa fa-google-plus"></i> ^regist_google<span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></a>
-        <a class="mdl-button mdl-button__block mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored mdl-color-text--white" href="https://38qa.net/register?to=" data-upgraded=",MaterialButton,MaterialRipple"><i class="fa fa-envelope"> ^regist_email</i><span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></a>
+        <a id="email-register" class="mdl-button mdl-button__block mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored mdl-color-text--white" href="https://38qa.net/register?to=" data-upgraded=",MaterialButton,MaterialRipple"><i class="fa fa-envelope"> ^regist_email</i>
+<span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></a>
+ -->
     </div>
-
 </div>

@@ -3,12 +3,14 @@
 class qa_html_theme_layer extends qa_html_theme_base
 {
 	public $plugin_url;
+	private $should_show_popup = false;
 
 	// needed to get the plugin url
-	public function qa_html_theme_layer($template, $content, $rooturl, $request)
+	public function __construct($template, $content, $rooturl, $request)
 	{
+		$this->should_show_popup = $this->shouldShowPopup();
 		qa_html_theme_base::qa_html_theme_base($template, $content, $rooturl, $request);
-		if (!$this->shouldShowPopup()) {
+		if (!$this->should_show_popup) {
 			return;
 		}
 		global $qa_layers;
@@ -20,7 +22,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 		// insert Javascript into the <head>
 		qa_html_theme_base::head_script();
 
-		if (!$this->shouldShowPopup()) {
+		if (!$this->should_show_popup) {
 			return;
 		}
 		$library_src = qa_opt('site_url').$this->plugin_url.'/vender/popup.js';
@@ -35,6 +37,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 			'^regist_twitter' => qa_lang('qa_popup_ad_lang/regist_twitter'),
 			'^regist_google' => qa_lang('qa_popup_ad_lang/regist_google'),
 			'^regist_email' => qa_lang('qa_popup_ad_lang/regist_email'),
+			'^ask' => qa_lang('qa_popup_ad_lang/ask'),
 		);
 		$html = strtr($html_tmpl, $subs);
 		$percentage = qa_opt('qa_popup_ad_scroll_percentage');
@@ -52,7 +55,7 @@ class qa_html_theme_layer extends qa_html_theme_base
 	public function head_css()
 	{
 		qa_html_theme_base::head_css();
-		if (!$this->shouldShowPopup()) {
+		if (!$this->should_show_popup) {
 			return;
 		}
 		$css = qa_opt("site_url") . $this->plugin_url . '/style.css';
@@ -67,11 +70,12 @@ class qa_html_theme_layer extends qa_html_theme_base
 
 	private function shouldShowPopup()
 	{
-		$blackList = array('/ask', '/login', '/reset');
+		$blackList = array('/ask', '/login', '/reset', '/register');
 		$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 		$show_mobile = qa_opt('qa_popup_ad_show_mobile');
-		// モバイルまたはタブレットでは表示しない
-		if (!$show_mobile && $this->is_mobile_or_tablet()) {
+
+		// モバイルでは表示しない
+		if (!$show_mobile && qa_is_mobile_probably()) {
 			return false;
 		}
 
@@ -79,15 +83,28 @@ class qa_html_theme_layer extends qa_html_theme_base
 			return false;
 		}
 
-		if ( !(bool)qa_opt('qa_popup_ad_show_logged_in') && qa_is_logged_in() ) {
-			return false;
+//		if ( !(bool)qa_opt('qa_popup_ad_show_logged_in') && qa_is_logged_in() ) {
+//			return false;
+//		}
+
+//		if ( !(bool)qa_opt('qa_popup_ad_only_first_access') ) {
+//			return true;
+//		}
+		$rand = rand(1,100);
+		$ratio = 5;
+		$userid = qa_get_logged_in_userid();
+		if(!empty($userid)) {
+			$ratio = 15;
 		}
 
-		if ( !(bool)qa_opt('qa_popup_ad_only_first_access') ) {
-			return true;
-		}
+		// $ratio = 1 ; // debug
 
-		if ($this->isJustLand()) {
+		$tmp = $rand % $ratio;
+		if($tmp == 0) {
+			// 直近投稿しているユーザーには表示しない
+			if(!empty($userid) && $this->is_post_recently($userid)) {
+				return false;
+			}
 			return true;
 		}
 
@@ -113,7 +130,21 @@ class qa_html_theme_layer extends qa_html_theme_base
 			}
 		}
 	}
-	
+
+	private function is_post_recently($userid) {
+ 		// 2週間以内に1件以上投稿しているかチェック
+		$day = 14;
+		$min = 0;
+
+        	$sql = "SELECT count(*)";
+	        $sql .= " FROM ^posts";
+      		$sql .= " WHERE (TYPE = 'Q' OR TYPE = 'A') AND userid = #";
+	        $sql .= " AND created > DATE_SUB(NOW(), INTERVAL # DAY)";
+
+       		$count = qa_db_read_one_value(qa_db_query_sub($sql, $userid, $day));
+		return ($count > $min);
+	}
+
 	private function is_mobile_or_tablet()
 	{
 		// qa_is_mobile_probably()がiPadをPC扱い

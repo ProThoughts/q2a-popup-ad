@@ -16,11 +16,15 @@ $(document).ready(function () {
 		popupflg = true;
 	}
 	$(^window).scroll(function (e) {
-		var window = $(e.currentTarget);
-		var scrollTop = window.scrollTop();
+		var target_area = $(e.currentTarget);
+		var scrollTop = target_area.scrollTop();
 
 		if ( !popupflg && scrollHeight <= scrollTop) {
+			window['optimizely'] = window['optimizely'] || [];
+			window.optimizely.push(["trackEvent", "popup_show_" + percentage]);
 			popup.open(popupHtml, 'html');
+			window['optimizely'] = window['optimizely'] || [];
+			window.optimizely.push(["trackEvent", "popup_show_" + percentage]); 
 			popupflg = true;
 		}
 	});
